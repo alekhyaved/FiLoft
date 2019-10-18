@@ -4,21 +4,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Register</title>
+<title>Login</title>
 </head>
 <body>
-<h1>Register</h1>
-<form action="/registerUser" method="POST">
-<div class="register">
-<label for="firstname">First Name</label>
-<input type="text" name="firstname" placeholder="First name" />
-<label for="lastname">Last Name</label>
-<input type="text" name="lastname" placeholder="Last name" />
+<h1>Login</h1>
+<form action="/loginUser" method="POST">
+<div class="login">
 <label for="emailid">Email ID</label>
 <input type="text" name="emailid" placeholder="Email ID" />
 <label for="password">Password</label>
 <input type="password" name="password" placeholder="Password" />
-<button type="submit"></button>
+<button type="submit">Login</button>
 </div>
 </form>
 </body>
