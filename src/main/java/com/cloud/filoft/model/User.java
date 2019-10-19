@@ -3,14 +3,16 @@ package com.cloud.filoft.model;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Id;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"emailid"})})
 public class User {
 
+	@Id
+	private String emailid;
 	private String firstname;
 	private String lastname;
-	private String emailid;
 	private String password;
 	
 	public User() {

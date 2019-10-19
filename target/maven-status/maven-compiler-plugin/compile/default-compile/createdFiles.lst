@@ -1,0 +1,5 @@
+com/cloud/filoft/repository/UserRepository.class
+com/cloud/filoft/controller/FiloftController.class
+com/cloud/filoft/App.class
+com/cloud/filoft/service/FiloftService.class
+com/cloud/filoft/model/User.class
