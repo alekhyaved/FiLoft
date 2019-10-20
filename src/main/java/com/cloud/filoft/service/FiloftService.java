@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cloud.filoft.model.File;
+import com.cloud.filoft.model.Files;
 import com.cloud.filoft.model.User;
 import com.cloud.filoft.repository.FileRepository;
 import com.cloud.filoft.repository.UserRepository;
@@ -48,7 +48,7 @@ public class FiloftService {
 		return null;
 	}
 	
-	public boolean uploadUserFile(File file) {		
+	public boolean uploadUserFile(Files file) {		
 		try {
 			fileRepository.save(file);
 			return true;
@@ -57,9 +57,18 @@ public class FiloftService {
 		return false;		
 	}
 	
-	public ArrayList<File> retrieveUserFiles(String emailid) {
+	public boolean checkFile(String filename, ArrayList<Files> retrievedFiles) {
+		for(Files files : retrievedFiles) {
+			if(files.getFileName() == filename) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<Files> retrieveUserFiles(String emailid) {
 		try {
-			ArrayList<File> filesArray = fileRepository.retrieveUserFiles(emailid);
+			ArrayList<Files> filesArray = fileRepository.retrieveUserFiles(emailid);
 			return filesArray;
 			
 		} catch (Exception e) {

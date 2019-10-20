@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-           <%@ page import ="com.cloud.filoft.model.File" %>
+           <%@ page import ="com.cloud.filoft.model.Files" %>
        <%@ page import ="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
@@ -11,12 +11,12 @@
 <body>
 <h2>Welcome ${name}</h2>
 <div>
-<% 
- if(session.getAttribute("userFiles") != null)
+<%
+	if(session.getAttribute("userFiles") != null)
  {
 	 System.out.println("not null");
-	 ArrayList<File> filesArray = (ArrayList<File>)session.getAttribute("userFiles"); 
- %>
+	 ArrayList<Files> filesArray = (ArrayList<Files>)session.getAttribute("userFiles");
+%>
  <table class="dashboardtable">
 					<thead class="dthead">
 					<tr>
@@ -32,9 +32,10 @@
 					</thead>
 
 <tbody class="dtr">
-<% 
-for(File file : filesArray) 
-{ %>
+<%
+	for(Files file : filesArray) 
+{
+%>
 <tr>
 	<td><%out.println(file.getFileName()); %></td>
 	<td><%out.println(file.getDescription()); %></td>

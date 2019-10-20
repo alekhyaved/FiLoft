@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cloud.filoft.model.File;
+import com.cloud.filoft.model.Files;
 
 
 @Repository
-public interface FileRepository extends JpaRepository<File,String> {
+public interface FileRepository extends JpaRepository<Files,String> {
 	
-	@Query("SELECT file FROM File file WHERE LOWER(file.emailid) = LOWER(:emailid)")
-    public ArrayList<File> retrieveUserFiles(@Param("username") String emailid);
+	@Query("SELECT file FROM Files file WHERE LOWER(file.emailid) = LOWER(:emailid)")
+    public ArrayList<Files> retrieveUserFiles(@Param("emailid") String emailid);
 
 }

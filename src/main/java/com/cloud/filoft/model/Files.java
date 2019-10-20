@@ -1,18 +1,22 @@
 package com.cloud.filoft.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import java.sql.Timestamp;
 
 @Entity
-public class File {
+public class Files {
 	
-	private String firstname;
-	private String lastname;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int fileId;
 	private String emailid;
 	private String filename;
 	private String description;
-	private String fileSize;
+	private Long fileSize;
 	private Timestamp createdtime;
 	private Timestamp updatedtime;
 	private String fileurl;
@@ -37,10 +41,10 @@ public class File {
         this.description = description;
     }
 	
-	public String getFileSize() {
+	public Long getFileSize() {
         return fileSize;
     }
-	public void setFileSize(String fileSize) {
+	public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 	
