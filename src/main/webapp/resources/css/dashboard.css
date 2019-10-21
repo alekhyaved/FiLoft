@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+.logout {
+	width: 5%;
+	 float: right;
+}
+
+.logoutbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+ 
+}
+
+.logoutbtn:hover {
+  opacity: 1;
+}
+
+.uploadFile {
+	width: 100%;
+}
+
+.inputFile {
+	width: 15%;
+    float: left;
+}
+
+.dashboardTable {
+	width: 100%;
+}
+
+.nofiles {
+	text-align: center;
+    padding: 5%;
+}
+
+.dashboardTable {
+	text-align: center;
+}

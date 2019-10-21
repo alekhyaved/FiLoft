@@ -7,17 +7,40 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard</title>
+  <link href="/resources/css/dashboard.css" rel="stylesheet" type="text/css">  
+ <script type="text/javascript">
+ function editalert() {
+	 alert("Please upload the file with same name to update")
+ }
+ </script>
 </head>
 <body>
 <h2>Welcome ${name}</h2>
+<div class="logout">
+<form action="/logout" method="POST">
+ <button type="submit" class="logoutbtn">Logout</button>
+</form>
+</div>
+<div class="uploadFile">
+	<form action="/uploadFile" method="POST" enctype="multipart/form-data">
+	<input type="hidden" name="emailid" value="<%=session.getAttribute("emailid") %>">
+	<%-- <% request.setAttribute("emailid", "emailid"); %> --%>
+	<div class="inputFile"><input type="file" name="file" class="inputfile" onChange="ValidateSize(this)" required>
+	</div>
+	<Label for="description"></Label>
+	Description: <input type="text" class="description" name="description" required>
+	 <input type="submit" name="upload" value="Upload">
+	</form>
+	</div>
+
 <div>
 <%
-	if(session.getAttribute("userFiles") != null)
+	if(session.getAttribute("files") != null)
  {
 	 System.out.println("not null");
-	 ArrayList<Files> filesArray = (ArrayList<Files>)session.getAttribute("userFiles");
+	 ArrayList<Files> filesArray = (ArrayList<Files>)session.getAttribute("files");
 %>
- <table class="dashboardtable">
+ <table class="dashboardTable">
 					<thead class="dthead">
 					<tr>
 						<th>File name</th>
@@ -30,8 +53,9 @@
 						<th>Delete</th>
 									</tr>
 					</thead>
+					<tbody class="dtr">
 
-<tbody class="dtr">
+
 <%
 	for(Files file : filesArray) 
 {
@@ -43,29 +67,30 @@
 	<td><%out.println(file.getCreatedTime()); %></td>
 	<td><%out.println(file.getUpdatedTime()); %></td>
 
-<td><button><a href="<%=file.getFileUrl()%>"><span class="glyphicon glyphicon-cloud-download"></span></a></button></td></tr>
-	<td>Update</td>
+<td><button><a href="<%=file.getFileUrl()%>">Download</a></button></td>
+	<td><button onclick="editalert()" >Update</button></td>
 	<form action="/delete" method="POST">
 	<input type="hidden" name="emailid" value="<%=file.getEmailId() %>">
+	<input type="hidden" name="fileId" value="<%=file.getFileID() %>">
 		<input type="hidden" name="filename" value="<%=file.getFileName() %>">
-<td>	<button ><span class="glyphicon glyphicon-trash" type="submit"></span></button></td>
-	</form>
+<td>	<button >Delete</button></td>
+	</form></tr>
 
 
 <% } %>										
-</tbody>
+	 
+  </tbody>
 
  
 </table>
-	 
- 
  <% }
  else
  { %>
-	 <div class="nofiles">
+	<div class="nofiles">
 	<%  out.println("No Files"); %>
-	 </div>
+	</div>
  <%   } %>
+
 </div>
 
 </body>

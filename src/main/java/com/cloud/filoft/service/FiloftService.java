@@ -57,13 +57,13 @@ public class FiloftService {
 		return false;		
 	}
 	
-	public boolean checkFile(String filename, ArrayList<Files> retrievedFiles) {
+	public Files checkFile(String filename, ArrayList<Files> retrievedFiles) {
 		for(Files files : retrievedFiles) {
-			if(files.getFileName() == filename) {
-				return true;
+			if(filename.equals(files.getFileName())) {
+				return files;
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	public ArrayList<Files> retrieveUserFiles(String emailid) {
@@ -75,5 +75,16 @@ public class FiloftService {
 			System.out.println("retrieve exception");
 		}
 		return null;
+	}
+	
+	public boolean deleteFile(Integer fileid) {
+		try {
+			fileRepository.deleteById(fileid);
+			return true;
+		} catch (Exception e) {
+
+		}
+		return false;
+		
 	}
 }

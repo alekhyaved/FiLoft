@@ -25,12 +25,14 @@ public class App extends SpringBootServletInitializer
 {
 	
 	@Resource
-	AWSService amazonClientService;
+	AWSService awsservice;
 	
     public static void main( String[] args )
     {
     	SpringApplication.run(App.class, args);
     }
+    
+    @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder app) {
     	return app.sources(App.class);
     }

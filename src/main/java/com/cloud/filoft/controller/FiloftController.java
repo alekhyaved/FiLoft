@@ -42,6 +42,11 @@ public class FiloftController {
 	@Autowired
 	private AWSService awsservice;
 	
+	@Autowired
+	FiloftController(AWSService awsservice) {
+		this.awsservice = awsservice;
+	}
+	
 	@GetMapping("/")
 	public String start() {
 		return "register";
@@ -97,6 +102,7 @@ public class FiloftController {
 		ArrayList<Files> files = filoftservice.retrieveUserFiles(emailid);
 		String name = user.getFirstname();
 		session.setAttribute("name", name);	
+		session.setAttribute("emailid", emailid);
 		if(files != null) {
 		session.setAttribute("files",files);
 		return "redirect:/dashboard";
@@ -111,6 +117,7 @@ public class FiloftController {
 	@PostMapping("/uploadFile")
 	public String uploadFile(@RequestPart(value = "file") MultipartFile filepart, @RequestParam("description") String description, @RequestParam("emailid") String emailid, HttpSession session) {
 		Long fileSize = filepart.getSize() / 1024 / 1024;
+		ArrayList<Files> userFiles = filoftservice.retrieveUserFiles(emailid);
 		if((fileSize <= 10)) {
 			try {
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());				
@@ -125,22 +132,56 @@ public class FiloftController {
 				files.setFileSize(fileSize);
 				files.setUpdatedTime(timestamp);
 				files.setFileUrl(fileUrl);
-				if(!filoftservice.checkFile(filename, retrievedFiles)) {
+				Files existingFile = filoftservice.checkFile(filename, retrievedFiles);
+				System.out.println("existingFile" +existingFile);
+				if(existingFile == null) {					
 					files.setCreatedTime(timestamp);
-				if(filoftservice.uploadUserFile(files)) {					
+				if(filoftservice.uploadUserFile(files)) {
+					ArrayList<Files> latestFiles = filoftservice.retrieveUserFiles(emailid);
+					session.setAttribute("files", latestFiles);
+					session.setAttribute("message", "Uploaded Successfully");
 					return "redirect:/dashboard";
 				}
+				session.setAttribute("files", userFiles);
+				session.setAttribute("message", "Upload Failed");
+				return "redirect:/dashboard";
 				} else {
-					if(filoftservice.uploadUserFile(files)) {					
+					files.setCreatedTime(existingFile.getCreatedTime());
+					files.setFileID(existingFile.getFileID());
+					System.out.println("id" +existingFile.getFileID());
+					if(filoftservice.uploadUserFile(files)) {
+						ArrayList<Files> latestFiles = filoftservice.retrieveUserFiles(emailid);
+						session.setAttribute("files", latestFiles);
+						session.setAttribute("message", "Updated Successfully");
 						return "redirect:/dashboard";
 					}
+					session.setAttribute("files", userFiles);
+					session.setAttribute("message", "Upload Failed");
+					return "redirect:/dashboard";
 				}				
-				return "redirect:/dashboard";
 			} catch(IOException e) {
 				
 			}
-		}		
+		}	
+		session.setAttribute("files", userFiles);
 		session.setAttribute("message", "Upload failed!!! Please upload images less than 10MB.");
+		return "redirect:/dashboard";
+	}
+	
+	@PostMapping("/delete")
+	public String deleteFile(@RequestParam(value = "emailid") String emailid,
+			@RequestParam("filename") String filename,
+	@RequestParam("fileId") Integer fileId, HttpSession session){
+		if(filoftservice.deleteFile(fileId)) {
+			awsservice.deleteFile(filename, emailid);
+			ArrayList<Files> latestFiles = filoftservice.retrieveUserFiles(emailid);
+			session.setAttribute("files", latestFiles);
+			session.setAttribute("message", "Deleted Successfully");
+			return "redirect:/dashboard";
+		}
+		ArrayList<Files> latestFiles = filoftservice.retrieveUserFiles(emailid);
+		session.setAttribute("files", latestFiles);
+		session.setAttribute("message", "Deletion Failed");
 		return "redirect:/dashboard";
 	}
 	

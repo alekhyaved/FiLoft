@@ -11,7 +11,7 @@ import com.cloud.filoft.model.Files;
 
 
 @Repository
-public interface FileRepository extends JpaRepository<Files,String> {
+public interface FileRepository extends JpaRepository<Files,Integer> {
 	
 	@Query("SELECT file FROM Files file WHERE LOWER(file.emailid) = LOWER(:emailid)")
     public ArrayList<Files> retrieveUserFiles(@Param("emailid") String emailid);

@@ -21,6 +21,14 @@ public class Files {
 	private Timestamp updatedtime;
 	private String fileurl;
 	
+	public int getFileID() {
+		return fileId;
+	}
+	
+	public void setFileID(Integer fileID) {
+		this.fileId = fileID;
+	}
+
 	public String getEmailId() {
 		return emailid;
 	}

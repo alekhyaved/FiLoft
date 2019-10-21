@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.util.IOUtils;
 
 @Service
@@ -27,15 +28,15 @@ public class AWSService {
 	
 	private AmazonS3 s3client;
 	private String awsS3Bucket;
-	private String path;
+	private String endpointUrl;
 	
 	@Autowired
 	public AWSService(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3Bucket,
-			String path) {
+			String endpointUrl) {
 		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(awsCredentialsProvider)
 				.withRegion(awsRegion.getName()).build();
 		this.awsS3Bucket = awsS3Bucket;
-		this.path = path;
+		this.endpointUrl = endpointUrl;
 	}
 	
 	public String uploadFileToS3(File s3File, String emailid) {
@@ -45,7 +46,7 @@ public class AWSService {
 			s3client.putObject(awsS3Bucket, keyPath, s3File);
 			s3client.putObject(new PutObjectRequest(awsS3Bucket, keyPath, s3File)
 					.withCannedAcl(CannedAccessControlList.PublicRead));
-			return path + "/" + awsS3Bucket + "/" + keyPath;
+			return endpointUrl + "/" + awsS3Bucket + "/" + keyPath;
 
 		} catch (Exception e) {
 
@@ -65,6 +66,17 @@ public class AWSService {
 			throw new RuntimeException("FAIL!");
 		}
 
+	}
+	
+	public boolean deleteFile(String fileName, String emailid) {
+		try {
+			String keyPath = emailid + "/" + fileName;
+			s3client.deleteObject(new DeleteObjectRequest(awsS3Bucket, keyPath));
+			return true;
+		}
+		catch (Exception e) {
+			throw new RuntimeException("FAIL!");
+		}
 	}
 
 }
