@@ -1,18 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-           <%@ page import ="com.cloud.filoft.model.Files" %>
+       <%@ page import ="com.cloud.filoft.model.Files" %>
        <%@ page import ="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
-  <link href="/resources/css/dashboard.css" rel="stylesheet" type="text/css">  
- <script type="text/javascript">
- function editalert() {
-	 alert("Please upload the file with same name to update")
- }
- </script>
+<title>Admin Dashboard</title>
+<link href="/resources/css/dashboard.css" rel="stylesheet" type="text/css"> 
 </head>
 <body>
 <h2>Welcome ${name}</h2>
@@ -21,18 +16,6 @@
  <button type="submit" class="logoutbtn">Logout</button>
 </form>
 </div>
-<div class="uploadFile">
-	<form action="/uploadFile" method="POST" enctype="multipart/form-data">
-	<input type="hidden" name="emailid" value="<%=session.getAttribute("emailid") %>">
-	<input type="hidden" name="name" value="<%=session.getAttribute("name") %>">
-	<div class="inputFile"><input type="file" name="file" class="inputfile" onChange="ValidateSize(this)" required>
-	</div>
-	<Label for="description"></Label>
-	Description: <input type="text" class="description" name="description" required>
-	 <input type="submit" name="upload" value="Upload">
-	</form>
-	</div>
-
 <div>
 <%
 	if(session.getAttribute("files") != null)
@@ -49,7 +32,6 @@
 						<th>Created Time</th>
 						<th>Updated Time</th>
 						<th>Download</th>
-						<th>Update</th>
 						<th>Delete</th>
 									</tr>
 					</thead>
@@ -68,8 +50,7 @@
 	<td><%out.println(file.getUpdatedTime()); %></td>
 
 <td><button><a href="<%=file.getFileUrl()%>">Download</a></button></td>
-	<td><button onclick="editalert()" >Update</button></td>
-	<form action="/delete" method="POST">
+	<form action="/admindelete" method="POST">
 	<input type="hidden" name="emailid" value="<%=file.getEmailId() %>">
 	<input type="hidden" name="fileId" value="<%=file.getFileID() %>">
 	<input type="hidden" name="name" value="<%=session.getAttribute("name") %>">
@@ -93,6 +74,5 @@
  <%   } %>
 
 </div>
-
 </body>
 </html>

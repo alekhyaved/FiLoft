@@ -15,5 +15,8 @@ public interface FileRepository extends JpaRepository<Files,Integer> {
 	
 	@Query("SELECT file FROM Files file WHERE LOWER(file.emailid) = LOWER(:emailid)")
     public ArrayList<Files> retrieveUserFiles(@Param("emailid") String emailid);
+	
+	@Query("SELECT file FROM Files file")
+    public ArrayList<Files> retrieveAllFiles();
 
 }

@@ -77,6 +77,18 @@ public class FiloftService {
 		return null;
 	}
 	
+	public ArrayList<Files> retrieveAllFiles(){
+		try {
+			ArrayList<Files> filesArray = fileRepository.retrieveAllFiles();
+			return filesArray;
+			
+		} catch (Exception e) {
+			System.out.println("retrieve exception");
+		}
+		return null;
+		
+	}
+	
 	public boolean deleteFile(Integer fileid) {
 		try {
 			fileRepository.deleteById(fileid);

@@ -67,6 +67,17 @@ public class FiloftController {
 		return "dashboard";
 	}
 	
+	@GetMapping("/adminlogin")
+	public String adminLogin() {
+		return "adminlogin";
+	}
+	
+	@GetMapping("/admindashboard")
+	public String adminDashboard() {
+		return "admindashboard";
+	}
+	
+	
 	@PostMapping("/registerUser")
 	public String registerUser(@RequestParam("firstname") String firstname,@RequestParam("lastname") String lastname, @RequestParam("emailid") String emailid,
 			@RequestParam("password") String password, HttpSession session) {
@@ -115,9 +126,11 @@ public class FiloftController {
 	}
 	
 	@PostMapping("/uploadFile")
-	public String uploadFile(@RequestPart(value = "file") MultipartFile filepart, @RequestParam("description") String description, @RequestParam("emailid") String emailid, HttpSession session) {
+	public String uploadFile(@RequestPart(value = "file") MultipartFile filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {
 		Long fileSize = filepart.getSize() / 1024 / 1024;
 		ArrayList<Files> userFiles = filoftservice.retrieveUserFiles(emailid);
+		session.setAttribute("name", name);	
+		session.setAttribute("emailid", emailid);
 		if((fileSize <= 10)) {
 			try {
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());				
@@ -169,9 +182,11 @@ public class FiloftController {
 	}
 	
 	@PostMapping("/delete")
-	public String deleteFile(@RequestParam(value = "emailid") String emailid,
+	public String deleteFile(@RequestParam(value = "emailid") String emailid, @RequestParam("name") String name,
 			@RequestParam("filename") String filename,
 	@RequestParam("fileId") Integer fileId, HttpSession session){
+		session.setAttribute("name", name);	
+		session.setAttribute("emailid", emailid);
 		if(filoftservice.deleteFile(fileId)) {
 			awsservice.deleteFile(filename, emailid);
 			ArrayList<Files> latestFiles = filoftservice.retrieveUserFiles(emailid);
@@ -183,6 +198,47 @@ public class FiloftController {
 		session.setAttribute("files", latestFiles);
 		session.setAttribute("message", "Deletion Failed");
 		return "redirect:/dashboard";
+	}
+	
+	@PostMapping("/checkadmin")
+	public String checkadmin(@RequestParam("emailid") String emailid,
+			@RequestParam("password") String password, ModelMap model, HttpSession session) {		
+		if (!emailid.equals("admin@sjsu.com") || !password.equals("adminpassword")) {
+			model.addAttribute("loginError", "Invalid email or password");
+			session.setAttribute("message", "Invalid username or Password");
+			return "redirect:/adminlogin";			
+		}
+		ArrayList<Files> files = filoftservice.retrieveAllFiles();
+		session.setAttribute("name", "Admin");	
+		session.setAttribute("emailid", emailid);
+		if(files != null) {
+		session.setAttribute("files",files);
+		return "redirect:/admindashboard";
+	    }
+		else
+		{
+			session.setAttribute("files", null);
+			return "redirect:/admindashboard";
+		 }
+	}
+	
+	@PostMapping("/admindelete")
+	public String adminDeleteFile(@RequestParam(value = "emailid") String emailid,
+			@RequestParam("filename") String filename,
+	@RequestParam("fileId") Integer fileId, HttpSession session){
+		session.setAttribute("name", "Admin");	
+		session.setAttribute("emailid", "admin@sjsu.com");
+		if(filoftservice.deleteFile(fileId)) {
+			awsservice.deleteFile(filename, emailid);
+			ArrayList<Files> latestFiles = filoftservice.retrieveAllFiles();
+			session.setAttribute("files", latestFiles);
+			session.setAttribute("message", "Deleted Successfully");
+			return "redirect:/admindashboard";
+		}
+		ArrayList<Files> latestFiles = filoftservice.retrieveAllFiles();
+		session.setAttribute("files", latestFiles);
+		session.setAttribute("message", "Deletion Failed");
+		return "redirect:/admindashboard";
 	}
 	
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
