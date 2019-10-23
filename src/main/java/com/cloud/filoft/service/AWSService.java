@@ -43,9 +43,11 @@ public class AWSService {
 
 		try {
 			String keyPath = emailid + "/" + s3File.getName();
-			s3client.putObject(awsS3Bucket, keyPath, s3File);
+			System.out.println("key path" +keyPath);
+//			s3client.putObject(awsS3Bucket, keyPath, s3File);
 			s3client.putObject(new PutObjectRequest(awsS3Bucket, keyPath, s3File)
 					.withCannedAcl(CannedAccessControlList.PublicRead));
+			System.out.println("put");
 			return endpointUrl + "/" + awsS3Bucket + "/" + keyPath;
 
 		} catch (Exception e) {
@@ -54,19 +56,19 @@ public class AWSService {
 		}
 	}
 	
-	public byte[] downloadFile(String fileName, String emailid) {
-
-		try {
-			String keyPath = emailid + "/" + fileName;
-			S3Object s3Object = s3client.getObject(new GetObjectRequest(awsS3Bucket, keyPath));
-			S3ObjectInputStream inputStream = s3Object.getObjectContent();
-			byte[] bytes = IOUtils.toByteArray(inputStream);
-			return bytes;
-			} catch (IOException e) {
-			throw new RuntimeException("FAIL!");
-		}
-
-	}
+//	public byte[] downloadFile(String fileName, String emailid) {
+//
+//		try {
+//			String keyPath = emailid + "/" + fileName;
+//			S3Object s3Object = s3client.getObject(new GetObjectRequest(awsS3Bucket, keyPath));
+//			S3ObjectInputStream inputStream = s3Object.getObjectContent();
+//			byte[] bytes = IOUtils.toByteArray(inputStream);
+//			return bytes;
+//			} catch (IOException e) {
+//			throw new RuntimeException("FAIL!");
+//		}
+//
+//	}
 	
 	public boolean deleteFile(String fileName, String emailid) {
 		try {

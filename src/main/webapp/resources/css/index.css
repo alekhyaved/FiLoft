@@ -1,6 +1,8 @@
 @charset "UTF-8";
 body {
 	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+    height: 500px;
 }
 
 .card{
@@ -8,7 +10,7 @@ body {
 }
 
 input[type=text], input[type=password] {
-	width: 100%;
+	width: 95%;
 	padding: 15px;
 	margin: 5px 0 22px 0;
 	display: inline-block;
@@ -20,4 +22,12 @@ input[type=text]:focus, input[type=password]:focus {
 	background-color: #ddd;
 	outline: none;
 }
-	
+
+.hide {
+    display: none; 
+}
+
+.container {
+	width: 100%;
+	height: 100%;
+}	

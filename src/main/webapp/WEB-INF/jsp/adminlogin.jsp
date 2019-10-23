@@ -9,6 +9,7 @@
   <link href="/resources/css/login.css" rel="stylesheet" type="text/css">  
 </head>
 <body>
+<div class="container">
 <h3> ${message}</h3>
   <div class="loginpage card">
     <div class="socialloginlinks">
@@ -24,6 +25,7 @@
 	    <button type="submit" class="loginbtn">Login</button>
       </div>
     </form>
+  </div>
   </div>
 </body>
 </html>

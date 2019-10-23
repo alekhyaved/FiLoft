@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StreamUtils;
-import javax.servlet.http.Part;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +76,11 @@ public class FiloftController {
 		return "admindashboard";
 	}
 	
+	@GetMapping("/googleLogin")
+	public String googleLogin() {
+		return "googleLogin";
+	}
+	
 	
 	@PostMapping("/registerUser")
 	public String registerUser(@RequestParam("firstname") String firstname,@RequestParam("lastname") String lastname, @RequestParam("emailid") String emailid,
@@ -125,26 +129,50 @@ public class FiloftController {
 		 }
 	}
 	
+	@PostMapping("/loginWithGoogle")
+	public String loginWithGoogle(@RequestParam("emailid") String emailid, @RequestParam("googleusername") String googleusername, HttpSession session) {
+		ArrayList<Files> files = filoftservice.retrieveUserFiles(emailid);
+		session.setAttribute("name", googleusername);	
+		session.setAttribute("emailid", emailid);
+		if(files != null) {
+		session.setAttribute("files",files);
+		return "redirect:/dashboard";
+	    }
+		else
+		{
+			session.setAttribute("files", null);
+			return "redirect:/dashboard";
+		 }		
+		
+	}
+	
 	@PostMapping("/uploadFile")
-	public String uploadFile(@RequestPart(value = "file") MultipartFile filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {
-		Long fileSize = filepart.getSize() / 1024 / 1024;
+	public String uploadFile(@RequestParam(value = "filepart") MultipartFile filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {
+//		Long fileSize = filepart.getSize() / 1024 / 1024;
 		ArrayList<Files> userFiles = filoftservice.retrieveUserFiles(emailid);
 		session.setAttribute("name", name);	
 		session.setAttribute("emailid", emailid);
-		if((fileSize <= 10)) {
+//		if((fileSize <= 10)) {
+		String filename;
+		Long fileSize = 5L;
 			try {
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());				
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());	
+				if(filepart.equals(null)) {
 				File s3File = convertMultiPartToFile(filepart);
-				String filename = s3File.getName();
+				 filename = s3File.getName();
+				} else {
+					filename = "test";
+					fileSize = 6L;
+				}
 				ArrayList<Files> retrievedFiles = filoftservice.retrieveUserFiles(emailid);
-				String fileUrl = awsservice.uploadFileToS3(s3File, emailid);
+//				String fileUrl = awsservice.uploadFileToS3(s3File, emailid);
 				Files files = new Files();
 				files.setEmailId(emailid);
 				files.setFileName(filename);
 				files.setDescription(description);
 				files.setFileSize(fileSize);
 				files.setUpdatedTime(timestamp);
-				files.setFileUrl(fileUrl);
+				files.setFileUrl("https://filoft.s3.amazonaws.com/sdf%40sdf.com/Accuracy.png");
 				Files existingFile = filoftservice.checkFile(filename, retrievedFiles);
 				System.out.println("existingFile" +existingFile);
 				if(existingFile == null) {					
@@ -175,7 +203,7 @@ public class FiloftController {
 			} catch(IOException e) {
 				
 			}
-		}	
+//		}	
 		session.setAttribute("files", userFiles);
 		session.setAttribute("message", "Upload failed!!! Please upload images less than 10MB.");
 		return "redirect:/dashboard";

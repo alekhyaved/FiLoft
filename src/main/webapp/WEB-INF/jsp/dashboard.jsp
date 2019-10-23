@@ -25,7 +25,7 @@
 	<form action="/uploadFile" method="POST" enctype="multipart/form-data">
 	<input type="hidden" name="emailid" value="<%=session.getAttribute("emailid") %>">
 	<input type="hidden" name="name" value="<%=session.getAttribute("name") %>">
-	<div class="inputFile"><input type="file" name="file" class="inputfile" onChange="ValidateSize(this)" required>
+	<div class="inputFile"><input type="file" name="filepart" class="inputfile">
 	</div>
 	<Label for="description"></Label>
 	Description: <input type="text" class="description" name="description" required>

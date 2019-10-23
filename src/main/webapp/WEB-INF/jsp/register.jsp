@@ -9,6 +9,7 @@
 <link href="/resources/css/index.css" rel="stylesheet" type="text/css">  
 </head>
 <body>
+<div class="container">
 <h3> ${message}</h3>
   <div class="registerpage card">
     <div class="loginlinks">
@@ -28,6 +29,7 @@
 			<button type="submit" class="registerbtn">Sign Up</button>
 	  </div>
 	</form>
+  </div>
   </div>	
 </body>
 </html>

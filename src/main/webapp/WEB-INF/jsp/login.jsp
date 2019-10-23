@@ -9,15 +9,14 @@
   <link href="/resources/css/index.css" rel="stylesheet" type="text/css">  
 </head>
 <body>
+<div class="container">
 <h3> ${message}</h3>
   <div class="loginpage card">
     <div class="socialloginlinks">
 	  <h1>Login</h1>
 	  <a href="/adminlogin">Admin? Login here!</a>
+	  <div class="googleloginbtn" type="submit"><a href="/googleLogin">Login with google</a></div>
 	  </div>
-	<div class="googleloginbtn" type="submit"><a href="/googleLogin.jsp">Login with google</a></div>
-</div>
-	</div>
     <form action="/loginUser" method="POST">
       <div class="loginform">
         <label for="emailid"><b>Email ID</b></label>
@@ -27,6 +26,7 @@
 	    <button type="submit" class="loginbtn">Login</button>
       </div>
     </form>
+  </div>
   </div>
 </body>
 </html>
