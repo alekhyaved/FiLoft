@@ -93,29 +93,28 @@ public class FiloftController {
 		user.setPassword(password);
 		if(!filoftservice.checkUser(emailid)) {
 			if (filoftservice.registerUser(user)) {
-				session.setAttribute("message", "success");
+				session.setAttribute("status", "Registration successful!");
 				return "redirect:/login";
 			}
-			session.setAttribute("message", "User already exists!");
+			session.setAttribute("status", "User already exists!");
 			return "redirect:/register";
 		}
-		session.setAttribute("message", "User already exists!");
+		session.setAttribute("status", "User already exists!");
 		return "redirect:/register";
 
 	}
 	
 	@PostMapping("/loginUser")
 	public String loginUser(@RequestParam("emailid") String emailid,
-			@RequestParam("password") String password, ModelMap model, HttpSession session) {
+			@RequestParam("password") String password, HttpSession session) {
 		User user = filoftservice.getUser(emailid, password);
 		
 		if (user == null) {
-			model.addAttribute("loginError", "Invalid email or password");
-			session.setAttribute("message", "Invalid username or Password");
+			session.setAttribute("status", "Invalid username or Password");
 			return "redirect:/login";			
 		}
 		ArrayList<Files> files = filoftservice.retrieveUserFiles(emailid);
-		String name = user.getFirstname();
+		String name = user.getFirstname() + " " + user.getLastname();
 		session.setAttribute("name", name);	
 		session.setAttribute("emailid", emailid);
 		if(files != null) {
@@ -148,31 +147,31 @@ public class FiloftController {
 	
 	@PostMapping("/uploadFile")
 	public String uploadFile(@RequestParam(value = "filepart") MultipartFile filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {
-//		Long fileSize = filepart.getSize() / 1024 / 1024;
+		Long fileSize = filepart.getSize() / 1024 / 1024;
 		ArrayList<Files> userFiles = filoftservice.retrieveUserFiles(emailid);
 		session.setAttribute("name", name);	
 		session.setAttribute("emailid", emailid);
-//		if((fileSize <= 10)) {
+		if((fileSize <= 10)) {
 		String filename;
-		Long fileSize = 5L;
+//		Long fileSize = 5L;
 			try {
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());	
-				if(filepart.equals(null)) {
+//				if(filepart.equals(null)) {
 				File s3File = convertMultiPartToFile(filepart);
 				 filename = s3File.getName();
-				} else {
-					filename = "test";
-					fileSize = 6L;
-				}
+//				} else {
+//					filename = "test";
+//					fileSize = 6L;
+//				}
 				ArrayList<Files> retrievedFiles = filoftservice.retrieveUserFiles(emailid);
-//				String fileUrl = awsservice.uploadFileToS3(s3File, emailid);
+				String fileUrl = awsservice.uploadFileToS3(s3File, emailid);
 				Files files = new Files();
 				files.setEmailId(emailid);
 				files.setFileName(filename);
 				files.setDescription(description);
 				files.setFileSize(fileSize);
 				files.setUpdatedTime(timestamp);
-				files.setFileUrl("https://filoft.s3.amazonaws.com/sdf%40sdf.com/Accuracy.png");
+				files.setFileUrl(fileUrl);
 				Files existingFile = filoftservice.checkFile(filename, retrievedFiles);
 				System.out.println("existingFile" +existingFile);
 				if(existingFile == null) {					
@@ -203,10 +202,26 @@ public class FiloftController {
 			} catch(IOException e) {
 				
 			}
-//		}	
+		}	
 		session.setAttribute("files", userFiles);
 		session.setAttribute("message", "Upload failed!!! Please upload images less than 10MB.");
 		return "redirect:/dashboard";
+	}
+	
+	@GetMapping("/downloadFile")
+    private ResponseEntity downloadFile(@RequestParam("fileUrl") String fileUrl, @RequestParam("emailid") String emailid){
+    	String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+    	System.out.println("filename");
+    	System.out.println(fileName);
+    	byte[] data= awsservice.downloadFile(fileName, emailid);
+        String contentType = null;
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(data);
 	}
 	
 	@PostMapping("/delete")
@@ -230,10 +245,9 @@ public class FiloftController {
 	
 	@PostMapping("/checkadmin")
 	public String checkadmin(@RequestParam("emailid") String emailid,
-			@RequestParam("password") String password, ModelMap model, HttpSession session) {		
+			@RequestParam("password") String password, HttpSession session) {		
 		if (!emailid.equals("admin@sjsu.com") || !password.equals("adminpassword")) {
-			model.addAttribute("loginError", "Invalid email or password");
-			session.setAttribute("message", "Invalid username or Password");
+			session.setAttribute("status", "Invalid username or password");
 			return "redirect:/adminlogin";			
 		}
 		ArrayList<Files> files = filoftservice.retrieveAllFiles();
@@ -260,29 +274,17 @@ public class FiloftController {
 			awsservice.deleteFile(filename, emailid);
 			ArrayList<Files> latestFiles = filoftservice.retrieveAllFiles();
 			session.setAttribute("files", latestFiles);
-			session.setAttribute("message", "Deleted Successfully");
+			session.setAttribute("message", "Deletion successful");
 			return "redirect:/admindashboard";
 		}
 		ArrayList<Files> latestFiles = filoftservice.retrieveAllFiles();
 		session.setAttribute("files", latestFiles);
-		session.setAttribute("message", "Deletion Failed");
+		session.setAttribute("message", "Deletion failed");
 		return "redirect:/admindashboard";
 	}
 	
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
 	public String logout(ModelMap model, HttpSession session) {
-		
-//		String id_token = (String) session.getAttribute("id_token");
-//		if (id_token != null) {
-//			try {
-//				GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(id_token);
-//				if (payLoad != null) {
-//					payLoad.setExpirationTimeSeconds(1L);
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
 		session.invalidate();
 		return "redirect:/login";
 	}

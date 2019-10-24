@@ -56,19 +56,19 @@ public class AWSService {
 		}
 	}
 	
-//	public byte[] downloadFile(String fileName, String emailid) {
-//
-//		try {
-//			String keyPath = emailid + "/" + fileName;
-//			S3Object s3Object = s3client.getObject(new GetObjectRequest(awsS3Bucket, keyPath));
-//			S3ObjectInputStream inputStream = s3Object.getObjectContent();
-//			byte[] bytes = IOUtils.toByteArray(inputStream);
-//			return bytes;
-//			} catch (IOException e) {
-//			throw new RuntimeException("FAIL!");
-//		}
-//
-//	}
+	public byte[] downloadFile(String fileName, String emailid) {
+
+		try {
+			String keyPath = emailid + "/" + fileName;
+			S3Object s3Object = s3client.getObject(new GetObjectRequest(awsS3Bucket, keyPath));
+			S3ObjectInputStream inputStream = s3Object.getObjectContent();
+			byte[] bytes = IOUtils.toByteArray(inputStream);
+			return bytes;
+			} catch (IOException e) {
+			throw new RuntimeException("FAIL!");
+		}
+
+	}
 	
 	public boolean deleteFile(String fileName, String emailid) {
 		try {

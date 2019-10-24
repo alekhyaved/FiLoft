@@ -10,12 +10,14 @@
 </head>
 <body>
 <div class="container">
-<h3> ${message}</h3>
+<p> ${status}</p>
   <div class="loginpage card">
     <div class="socialloginlinks">
 	  <h1>Login</h1>
+	  <div class="sociallinks">
 	  <a href="/adminlogin">Admin? Login here!</a>
 	  <div class="googleloginbtn" type="submit"><a href="/googleLogin">Login with google</a></div>
+	   <a href="/register">New user? Register here!</a></div>
 	  </div>
     <form action="/loginUser" method="POST">
       <div class="loginform">

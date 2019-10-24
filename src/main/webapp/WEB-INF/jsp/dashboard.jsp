@@ -8,6 +8,11 @@
 <meta charset="UTF-8">
 <title>Dashboard</title>
   <link href="/resources/css/dashboard.css" rel="stylesheet" type="text/css">  
+  <style>
+  tbody tr:nth-of-type(even) {
+      background-color:#f1f1f1;
+    }
+</style>
  <script type="text/javascript">
  function editalert() {
 	 alert("Please upload the file with same name to update")
@@ -16,6 +21,7 @@
 </head>
 <body>
 <h2>Welcome ${name}</h2>
+<p>${message}</p>
 <div class="logout">
 <form action="/logout" method="POST">
  <button type="submit" class="logoutbtn">Logout</button>
@@ -67,7 +73,7 @@
 	<td><%out.println(file.getCreatedTime()); %></td>
 	<td><%out.println(file.getUpdatedTime()); %></td>
 
-<td><button><a href="<%=file.getFileUrl()%>">Download</a></button></td>
+<td><button><a href="/downloadFile?fileUrl=<%=file.getFileUrl() %>&emailid=<%=file.getEmailId()%>">Download</a></button></td>
 	<td><button onclick="editalert()" >Update</button></td>
 	<form action="/delete" method="POST">
 	<input type="hidden" name="emailid" value="<%=file.getEmailId() %>">

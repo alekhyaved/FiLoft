@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-<h3> ${message}</h3>
+<p> ${status}</p>
   <div class="registerpage card">
     <div class="loginlinks">
 	  <h1>Register</h1>

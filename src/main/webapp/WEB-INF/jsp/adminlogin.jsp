@@ -10,11 +10,12 @@
 </head>
 <body>
 <div class="container">
-<h3> ${message}</h3>
+<p> ${status}</p>
   <div class="loginpage card">
     <div class="socialloginlinks">
 	  <h1>Login</h1>
-	  <a href="/login">User? Login here!</a>
+	  <div class="sociallinks">
+	  <a href="/login">User? Login here!</a></div>
 	</div>
     <form action="/checkadmin" method="POST">
       <div class="loginform">
