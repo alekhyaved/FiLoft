@@ -15,13 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StreamUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import javax.servlet.http.Part;
+import java.io.InputStream;
 
 import com.cloud.filoft.model.Files;
 
@@ -146,30 +147,28 @@ public class FiloftController {
 	}
 	
 	@PostMapping("/uploadFile")
-	public String uploadFile(@RequestParam(value = "filepart") MultipartFile filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {
+	public String uploadFile(@RequestPart("filepart") Part filepart, @RequestParam("description") String description,  @RequestParam("name") String name, @RequestParam("emailid") String emailid, HttpSession session) {		
+		System.out.println("filepart");
+		System.out.println(filepart);
+		System.out.println(filepart.getSize());
 		Long fileSize = filepart.getSize() / 1024 / 1024;
 		ArrayList<Files> userFiles = filoftservice.retrieveUserFiles(emailid);
 		session.setAttribute("name", name);	
 		session.setAttribute("emailid", emailid);
+		InputStream inputStream = null;
 		if((fileSize <= 10)) {
 		String filename;
-//		Long fileSize = 5L;
-			try {
+				
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());	
-//				if(filepart.equals(null)) {
-				File s3File = convertMultiPartToFile(filepart);
-				 filename = s3File.getName();
-//				} else {
-//					filename = "test";
-//					fileSize = 6L;
-//				}
+				filename = getFileName(filepart);
+				Long fileinKB =  filepart.getSize() / 1024;
 				ArrayList<Files> retrievedFiles = filoftservice.retrieveUserFiles(emailid);
-				String fileUrl = awsservice.uploadFileToS3(s3File, emailid);
+				String fileUrl = awsservice.uploadFileToS3(filename, filepart,inputStream, emailid);
 				Files files = new Files();
 				files.setEmailId(emailid);
 				files.setFileName(filename);
 				files.setDescription(description);
-				files.setFileSize(fileSize);
+				files.setFileSize(fileinKB);
 				files.setUpdatedTime(timestamp);
 				files.setFileUrl(fileUrl);
 				Files existingFile = filoftservice.checkFile(filename, retrievedFiles);
@@ -198,10 +197,7 @@ public class FiloftController {
 					session.setAttribute("files", userFiles);
 					session.setAttribute("message", "Upload Failed");
 					return "redirect:/dashboard";
-				}				
-			} catch(IOException e) {
-				
-			}
+				}				 
 		}	
 		session.setAttribute("files", userFiles);
 		session.setAttribute("message", "Upload failed!!! Please upload images less than 10MB.");
@@ -297,6 +293,15 @@ public class FiloftController {
 		return convFile;
 	}
 	
+	public String getFileName(final Part part) {
+	    for (String content : part.getHeader("content-disposition").split(";")) {
+	        if (content.trim().startsWith("filename")) {
+	            return content.substring(
+	                    content.indexOf('=') + 1).trim().replace("\"", "");
+	        }
+	    }
+	    return null;
+	}
 		
 
 }

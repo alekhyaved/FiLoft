@@ -1,14 +1,10 @@
 package com.cloud.filoft.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -22,6 +18,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.util.IOUtils;
+import javax.servlet.http.Part;
 
 @Service
 public class AWSService {
@@ -39,13 +36,15 @@ public class AWSService {
 		this.endpointUrl = endpointUrl;
 	}
 	
-	public String uploadFileToS3(File s3File, String emailid) {
+	public String uploadFileToS3(String filename, Part part, InputStream inputStream,  String emailid) {
 
 		try {
-			String keyPath = emailid + "/" + s3File.getName();
+			ObjectMetadata metadata = new ObjectMetadata();
+			metadata.setContentLength(part.getSize());
+			metadata.setContentLength(Long.valueOf(part.getInputStream().available()));
+			String keyPath = emailid + "/" + filename;
 			System.out.println("key path" +keyPath);
-//			s3client.putObject(awsS3Bucket, keyPath, s3File);
-			s3client.putObject(new PutObjectRequest(awsS3Bucket, keyPath, s3File)
+			s3client.putObject(new PutObjectRequest(awsS3Bucket, keyPath, part.getInputStream(), metadata)
 					.withCannedAcl(CannedAccessControlList.PublicRead));
 			System.out.println("put");
 			return endpointUrl + "/" + awsS3Bucket + "/" + keyPath;

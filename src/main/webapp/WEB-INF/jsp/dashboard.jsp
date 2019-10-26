@@ -69,7 +69,7 @@
 <tr>
 	<td><%out.println(file.getFileName()); %></td>
 	<td><%out.println(file.getDescription()); %></td>
-	<td><%out.println(file.getFileSize()); %></td>
+	<td><%out.println(file.getFileSize()); %>KB</td>
 	<td><%out.println(file.getCreatedTime()); %></td>
 	<td><%out.println(file.getUpdatedTime()); %></td>
 
