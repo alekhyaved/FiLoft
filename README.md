@@ -2,9 +2,11 @@
 
 University Name: http://www.sjsu.edu/
 
-Professor: [Sanjay Garje ] (https://www.linkedin.com/in/sanjaygarje/)
+Professor: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/)
 
-ISA : [Rajalakshmi Babu] (https://www.linkedin.com/in/rajalakshmib/)
+ISA : [Rajalakshmi Babu](https://www.linkedin.com/in/rajalakshmib/)
+
+Student: [Leela Alekhya Vedula](https://www.linkedin.com/in/leela-alekhya-vedula-79013a174/)
 
 
 Project application Description: FiLoft is a service that is used to upload, store and download files by the authorized users.
@@ -20,13 +22,15 @@ URL for Application with Registered Domain Name: (http://filoft.alekhyavedula.co
 
 Amazon S3 
 
-AWS ElasticBeanStalk 
+AWS Elastic BeanStalk 
+
+AWS EC2
 
 AWS CloudFront 
 
 Amazon Route 53 
 
-Amazon SNS and  CloudWatch 
+Amazon SNS and CloudWatch 
 
 Amazon Lambda 
 
@@ -58,10 +62,10 @@ Administrator
 #Images
 
 **Registration**:
-<img src="https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/registration.jpg">
+![alt text](https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/register_screenshot.png)
 
 **Log In**
-<img src="https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/login.jpg">
+![alt text](https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/login_screenshot.png)
 
-**Logged In**
-<img src="https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/loggedIn.jpg">
+**Dashboard**
+![alt text](https://github.com/alekhyaved/FiLoft/blob/master/src/main/webapp/resources/images/Dashboard_screenshot.png)
